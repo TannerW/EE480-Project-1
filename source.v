@@ -8,7 +8,7 @@
 `define src
 `define state
 `define regsize		[15:0]
-`define memesize 	[65535:0]
+`define memsize 	[65535:0]
 `define width		16;
 
 //op codes
@@ -37,30 +37,34 @@ module processor(halt, reset, clk)
 	output reg halt;
 	input reset, clk;
 	
+	reg `word regfile `regsize;
+	reg `word mainMem `memsize
 	
+	
+
 	
 		
 endmodule
 
-//--------------------regfile------------------------
-module regfile(clk, out, in, regc, regsel);
-	input clk;
-	input `word in;
-	input [3:0] regc, regsel;
-	output `word out;
-	reg `word register `regsize;
-	
-	always@ (posedge clk)begin
-		case(regc)
-		0: register[regsel] <= register[regsel];
-		1: register[regsel] <= in;
-		2: register[regsel] <= register[regsel] << 1;
-		3:register[regsel] <= register[regsel] >> 1;
-	endcase
-	end
-	assign out = register[regsel];
-	
-endmodule
+////--------------------regfile------------------------
+//module regfile(clk, out, in, regc, regsel);
+//	input clk;
+//	input `word in;
+//	input [3:0] regc, regsel;
+//	output `word out;
+//	reg `word register `regsize;
+//	
+//	always@ (posedge clk)begin
+//		case(regc)
+//		0: register[regsel] <= register[regsel];
+//		1: register[regsel] <= in;
+//		2: register[regsel] <= register[regsel] << 1;
+//		3:register[regsel] <= register[regsel] >> 1;
+//	endcase
+//	end
+//	assign out = register[regsel];
+//	
+//endmodule
 
 //----------------------ALU---------------------------
 module alu(out, a, b, c, cond)
@@ -91,25 +95,24 @@ module oracle();
 	
 endmodule
 
-//-----------------------------------------------------main mem--------------------------------
-module mainMem(clk, write, datain, dataout, addr);
-	input clk, write;
-	input `word datain, addr;
-	output `word dataout;
-	
-	reg `word memory `memsize;
-	
-	always@ (posedge clk) begin
-		if (write) memory[addr] <= datain;
-		dataout <= memory[addr];
-	end
-	
-endmodule
-
+////-----------------------------------------------------main mem--------------------------------
+//module mainMem(clk, write, datain, dataout, addr);
+//	input clk, write;
+//	input `word datain, addr;
+//	output `word dataout;
+//	
+//	reg `word memory `memsize;
+//	
+//	always@ (posedge clk) begin
+//		if (write) memory[addr] <= datain;
+//		dataout <= memory[addr];
+//	end
+//	
+//endmodule
+//
 //-----------------------------------------------------lss_reg---------------------------------
 
 module register(clk, out, in, c)
-	input clk;
 	input [1:0] c;
 	input `word in;
 	output `word out;
