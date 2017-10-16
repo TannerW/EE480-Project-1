@@ -43,7 +43,7 @@ module processor(halt, reset, clk)
 endmodule
 
 //--------------------regfile------------------------
-module regfile();
+module regfile(clk, out, in, regc, regsel);
 	input clk;
 	input `word in;
 	input [3:0] regc, regsel;
@@ -63,14 +63,14 @@ module regfile();
 endmodule
 
 //----------------------ALU---------------------------
-module alu(out, a, b, control, condition)
+module alu(out, a, b, c, cond)
 	input `word a, b;
-	input [2:0] control;
+	input [2:0] cl;
 	output `word out;
-	output [7:0] condition;
+	output [7:0] cond;
 	
-	always@ (control) begin
-		case(control)
+	always@ (c) begin
+		case(c)
 			0: out = a + b;
 			1: out = a & b;
 			2: out = a | b;
@@ -80,9 +80,9 @@ module alu(out, a, b, control, condition)
 	end
 	
 	always@ (a, b)begin
-		if (a>b) condition = 8'b00001111; // f lt le eq ne ge gt t
-		else if (b>a) condition = 8'b01101001;
-		else	condition = 00010001;
+		if (a>b) cond = 8'b00001111; // f lt le eq ne ge gt t
+		else if (b>a) cond = 8'b01101001;
+		else	cond = 00010001;
 	end
 endmodule
 
@@ -99,7 +99,7 @@ module mainMem(clk, write, datain, dataout, addr);
 	
 	reg `word memory `memsize;
 	
-	always@ (posedge clk)begin
+	always@ (posedge clk) begin
 		if (write) memory[addr] <= datain;
 		dataout <= memory[addr];
 	end
@@ -108,17 +108,18 @@ endmodule
 
 //-----------------------------------------------------lss_reg---------------------------------
 
-module register(clk, out, in, control)
+module register(clk, out, in, c)
 	input clk;
-	input [1:0] control;
+	input [1:0] c;
 	input `word in;
 	output `word out;
 	
 	always@ (posedge clk)begin
-		case(control)
+		case(c)
 		0: out <= out;
 		1: out <= in;
 		2: out <= out << 1;
 		3: out <= out >> 1;
+		endcase
 	end
 endmodule
