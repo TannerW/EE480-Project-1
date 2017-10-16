@@ -6,7 +6,9 @@
 .text
 ad $u2, $u1, $u0
 co $u3, $u2
-br ne, halt
+br eq, skip
+sy
+skip: 
 
 ;TEST an
 .data
@@ -16,7 +18,9 @@ br ne, halt
 .text
 an $u2, $u1, $u0
 co $u3, $u2
-br ne, halt
+br eq, skip
+sy
+skip: 
 
 ;TEST eo
 .data
@@ -26,7 +30,9 @@ br ne, halt
 .text
 eo $u2, $u1, $u0
 co $u3, $u2
-br ne, halt
+br eq, skip
+sy
+skip: 
 
 ;TEST li
 .data
@@ -36,7 +42,9 @@ br ne, halt
 .text
 li $u2, 42
 co $u3, $u2
-br ne, halt
+br eq, skip
+sy
+skip: 
 
 ;TEST li negative
 .data
@@ -46,7 +54,9 @@ br ne, halt
 .text
 li $u2, -42
 co $u3, $u2
-br ne, halt
+br eq, skip
+sy
+skip: 
 
 ;TEST lo ???????????????????????
 .data
@@ -56,7 +66,9 @@ br ne, halt
 .text
 lo $u2, $u0
 co $u3, $u2
-br ne, halt
+br eq, skip
+sy
+skip: 
 
 ;TEST mi
 .data
@@ -66,7 +78,9 @@ br ne, halt
 .text
 mi $u2, $u0
 co $u3, $u2
-br ne, halt
+br eq, skip
+sy
+skip: 
 
 ;TEST no
 .data
@@ -76,7 +90,9 @@ br ne, halt
 .text
 no $u2, $u0
 co $u3, $u2
-br ne, halt
+br eq, skip
+sy
+skip: 
 
 ;TEST no (non-zero to 0)
 .data
@@ -86,7 +102,9 @@ br ne, halt
 .text
 no $u2, $u0
 co $u3, $u2
-br ne, halt
+br eq, skip
+sy
+skip: 
 
 ;TEST or
 .data
@@ -96,9 +114,11 @@ br ne, halt
 .text
 or $u2, $u1, $u0
 co $u3, $u2
-br ne, halt
+br eq, skip
+sy
+skip: 
 
-;TEST si ??????????????????
+;TEST si
 .data
 .word  ;put in u0  
 .word  ;put in u1  
@@ -114,7 +134,9 @@ br ne, halt
 .text
 sr $u2, $u1, $u0
 co $u3, $u2
-br ne, halt
+br eq, skip
+sy
+skip: 
 
 ;TEST st ??????????????
 .data
@@ -124,28 +146,27 @@ br ne, halt
 .text
 st $u2, $u0
 co $u3, $u2
-br ne, halt
+br eq, skip
+sy
+skip: 
 
-;TEST co ??????????????????
+;TEST co ????????????????
 .data
 .word  ;put in u0  
 .word  ;put in u1  
 .word  ;put in u3  
 .text
 
-;TEST br ??????????????????
+;TEST br ????????????????
 .data
 .word  ;put in u0  
 .word  ;put in u1  
 .word  ;put in u3  
 .text
 
-;TEST jr ????????????????
+;TEST jr ????????
 .data
 .word  ;put in u0  
 .word  ;put in u1  
 .word  ;put in u3  
 .text
-
-.text
-halt: sy
