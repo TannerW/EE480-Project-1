@@ -37,8 +37,12 @@ module processor(halt, reset, clk)
 	output reg halt;
 	input reset, clk;
 	
+	
 	reg `word regfile `regsize;
-	reg `word mainMem `memsize
+	reg `word mainMem `memsize;
+	
+	
+	
 	
 	
 
