@@ -1,0 +1,151 @@
+;TEST ad
+.data
+.word 3 ;put in u0
+.word 5 ;put in u1
+.word 8 ;put in u3
+.text
+ad $u2, $u1, $u0
+co $u3, $u2
+br ne, halt
+
+;TEST an
+.data
+.word 172 ;put in u0 10101100
+.word 37 ;put in u1  00100101
+.word 36 ;put in u3  00100100
+.text
+an $u2, $u1, $u0
+co $u3, $u2
+br ne, halt
+
+;TEST eo
+.data
+.word 55  ;put in u0  00110111
+.word 280 ;put in u1  10110100
+.word 131 ;put in u3  10000011
+.text
+eo $u2, $u1, $u0
+co $u3, $u2
+br ne, halt
+
+;TEST li
+.data
+.word  ;put in u0  
+.word  ;put in u1  
+.word  42 ;put in u3  
+.text
+li $u2, 42
+co $u3, $u2
+br ne, halt
+
+;TEST li negative
+.data
+.word  ;put in u0  
+.word  ;put in u1  
+.word  -42 ;put in u3  
+.text
+li $u2, -42
+co $u3, $u2
+br ne, halt
+
+;TEST lo ???????????????????????
+.data
+.word  42 ;put in u0  
+.word  ;put in u1  
+.word  42 ;put in u3  
+.text
+lo $u2, $u0
+co $u3, $u2
+br ne, halt
+
+;TEST mi
+.data
+.word  55 ;put in u0  
+.word  ;put in u1  
+.word  -55 ;put in u3  
+.text
+mi $u2, $u0
+co $u3, $u2
+br ne, halt
+
+;TEST no
+.data
+.word  0 ;put in u0  
+.word  ;put in u1  
+.word  1 ;put in u3  
+.text
+no $u2, $u0
+co $u3, $u2
+br ne, halt
+
+;TEST no (non-zero to 0)
+.data
+.word  162 ;put in u0  
+.word  ;put in u1  
+.word  0 ;put in u3  
+.text
+no $u2, $u0
+co $u3, $u2
+br ne, halt
+
+;TEST or
+.data
+.word  155 ;put in u0  10011011
+.word  86 ;put in u1   01010110
+.word  223 ;put in u3  11011111
+.text
+or $u2, $u1, $u0
+co $u3, $u2
+br ne, halt
+
+;TEST si ??????????????????
+.data
+.word  ;put in u0  
+.word  ;put in u1  
+.word  ;put in u3  
+.text
+
+
+;TEST sr
+.data
+.word  97 ;put in u0   01100001
+.word  2 ;put in u1  
+.word  24 ;put in u3   00011000
+.text
+sr $u2, $u1, $u0
+co $u3, $u2
+br ne, halt
+
+;TEST st ??????????????
+.data
+.word  42 ;put in u0  
+.word  ;put in u1  
+.word  42 ;put in u3  
+.text
+st $u2, $u0
+co $u3, $u2
+br ne, halt
+
+;TEST co ??????????????????
+.data
+.word  ;put in u0  
+.word  ;put in u1  
+.word  ;put in u3  
+.text
+
+;TEST br ??????????????????
+.data
+.word  ;put in u0  
+.word  ;put in u1  
+.word  ;put in u3  
+.text
+
+;TEST jr ????????????????
+.data
+.word  ;put in u0  
+.word  ;put in u1  
+.word  ;put in u3  
+.text
+
+.text
+halt: sy
