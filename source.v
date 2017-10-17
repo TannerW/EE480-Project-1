@@ -3,6 +3,7 @@
 // Authors: Charles Vanderpool
 
 `define word		[15:0]
+`define halfword	[7:0]
 `define opcode
 `define dest
 `define src
@@ -10,6 +11,9 @@
 `define regsize		[15:0]
 `define memsize 	[65535:0]
 `define width		16;
+`define aluc		[2:0]
+`define regc		[1:0]
+`define regsel		[3:0]
 
 //op codes
 `define OPad	4'b0000
