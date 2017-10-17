@@ -4,9 +4,10 @@
 
 `define word		[15:0]
 `define halfword	[7:0]
-`define opcode
-`define dest
-`define src
+`define opcode      [15:12]
+`define dest        [11:8]
+`define src         [7:4]
+`define Tsrc        [3:0]
 `define state
 `define regsize		[15:0]
 `define memsize 	[65535:0]
@@ -17,24 +18,24 @@
 
 //op codes
 `define OPad	4'b0000
-`define OPal	4'b0110
 `define OPan	4'b0001
-`define OPbr	4'b1010
-`define OPcl	4'b1110
-`define OPco	4'b1110
-`define OPdl	4'b0111
+`define OPor	4'b0010
+`define OPno	4'b0011
 `define OPeo	4'b0100
+`define OPmi	4'b0101
+`define OPal	4'b0110
+`define OPdl	4'b0111
+`define OPml	4'b1000
+`define OPsr	4'b1001
+`define OPbr	4'b1010
 `define OPjr	4'b1011
 `define OPli	4'b1100
-`define OPlo	4'b1110
-`define OPml	4'b1000
-`define OPmi	4'b0101
-`define OPnl	4'b1110
-`define OPno	4'b0011
-`define OPor	4'b0010
 `define OPsi	4'b1101
-`define OPsr	4'b1001
+`define OPlo	4'b1110
+`define OPcl	4'b1110
+`define OPco	4'b1110
 `define OPst	4'b1110
+`define OPnl	4'b1110
 `define OPsy	4'b1111
 
 //module processor(halt, reset, clk)
@@ -90,9 +91,9 @@ endmodule
 //--------------------regfile------------------------
 module regfile(clk, out, in, regc, regsel);
 	input clk;
-	input `word in;
-	input [3:0] regc, regsel;
-	output `word out;
+	input `word in; //write data if reg control is set to write
+	input [3:0] regc, regsel; 
+	output `word out; 
 	reg `word register `regsize;
 	
 	always@ (posedge clk)begin
