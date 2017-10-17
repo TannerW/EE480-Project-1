@@ -12,26 +12,26 @@
 `define width		16;
 
 //op codes
-`define OPad	4'b
-`define OPal	4'b
-`define OPan	4'b
-`define OPbr	4'b
-`define OPcl	4'b
-`define OPco	4'b
-`define OPdl	4'b
-`define OPeo	4'b
-`define OPjr	4'b
-`define OPli	4'b
-`define OPlo	4'b
-`define OPml	4'b
-`define OPmi	4'b
-`define OPnl	4'b
-`define OPno	4'b
-`define OPor	4'b
-`define OPsi	4'b
-`define OPsr	4'b
-`define OPst	4'b
-`define OPsy	4'b
+`define OPad	4'b0000
+`define OPal	4'b0110
+`define OPan	4'b0001
+`define OPbr	4'b1010
+`define OPcl	4'b1110
+`define OPco	4'b1110
+`define OPdl	4'b0111
+`define OPeo	4'b0100
+`define OPjr	4'b1011
+`define OPli	4'b1100
+`define OPlo	4'b1110
+`define OPml	4'b1000
+`define OPmi	4'b0101
+`define OPnl	4'b1110
+`define OPno	4'b0011
+`define OPor	4'b0010
+`define OPsi	4'b1101
+`define OPsr	4'b1001
+`define OPst	4'b1110
+`define OPsy	4'b1111
 
 module processor(halt, reset, clk)
 	output reg halt;
