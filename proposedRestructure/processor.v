@@ -238,12 +238,6 @@ module alu(ALUOut, clk, a, b, currentOpcode);
 	       `OPst: ;
 	   endcase
 	end
-	
-	always@ (a, b)begin
-		if (a>b) cond = 8'b00001111; // f lt le eq ne ge gt t
-		else if (b>a) cond = 8'b01101001;
-		else	cond = 00010001;
-	end
 endmodule
 
 //--------------------regfile------------------------
