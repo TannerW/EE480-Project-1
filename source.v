@@ -33,42 +33,75 @@
 `define OPst	4'b1110
 `define OPsy	4'b1111
 
+//module processor(halt, reset, clk)
+//	output reg halt;
+//	input reset, clk;
+//	
+//	
+//	reg `word regfile `regsize;
+//	reg `word mainMem `memsize;
+//	
+//	
+//	
+//	
+//	
+//
+//	
+//		
+//endmodule
 module processor(halt, reset, clk)
 	output reg halt;
 	input reset, clk;
+		
+	wire `aluc alu_c,//control signals
+	wire `regc A_c, Y_c, cond_c;
+	//wire `regc mdr_c, mar_c;
+	wire `regc reg_c;
+	wire `regsel reg_sel;
+	wire `word databus, reg_out, reg_in, alu_out, alu_a, alu_b, Y_out;
+	wire `halfword alu_cond, cond_out;
+	wire regfileRead, YtoBus, 
 	
-	
-	reg `word regfile `regsize;
+	//reg `word regfile `regsize;
 	reg `word mainMem `memsize;
 	
+	//control
+	oracle();
 	
+	//regfile
+	regfile(clk, reg_out, reg_in, regc, regsel);
+	tri regfileBus(databus, regfileRead, regout);
 	
+	//alu
+	alu(alu_out, alu_a, alu_b, alu_c, alu_cond);
 	
-	
-
-	
+	//aux registers
+	lss_reg A(clk, alu_a, databus, A_c)
+	lss_reg Y(clk, y_out, alu_out, y_c);
+	tri yBus(databus, YtoBus, y_out);
+	lss_reg cond(clk, cond_out, alu_cond, cond_c);//condition register
 		
 endmodule
 
-////--------------------regfile------------------------
-//module regfile(clk, out, in, regc, regsel);
-//	input clk;
-//	input `word in;
-//	input [3:0] regc, regsel;
-//	output `word out;
-//	reg `word register `regsize;
-//	
-//	always@ (posedge clk)begin
-//		case(regc)
-//		0: register[regsel] <= register[regsel];
-//		1: register[regsel] <= in;
-//		2: register[regsel] <= register[regsel] << 1;
-//		3:register[regsel] <= register[regsel] >> 1;
-//	endcase
-//	end
-//	assign out = register[regsel];
-//	
-//endmodule
+//--------------------regfile------------------------
+module regfile(clk, out, in, regc, regsel);
+	input clk;
+	input `word in;
+	input [3:0] regc, regsel;
+	output `word out;
+	reg `word register `regsize;
+	
+	always@ (posedge clk)begin
+		case(regc)
+		0: register[regsel] <= register[regsel];
+		1: register[regsel] <= in;
+		2: register[regsel] <= register[regsel] << 1;
+		3:register[regsel] <= register[regsel] >> 1;
+	endcase
+	end
+	assign out = register[regsel];
+	
+endmodule
 
 //----------------------ALU---------------------------
 module alu(out, a, b, c, cond)
