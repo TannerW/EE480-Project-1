@@ -57,71 +57,232 @@
 module processor(halt, reset, clk)
 	output reg halt;
 	input reset, clk;
-		
+	wire start;
 	wire `aluc alu_c,//control signals
-	wire `regc A_c, Y_c, cond_c;
-	//wire `regc mdr_c, mar_c;
+	wire `regc A_c, Y_c, mdr_c, mar_c, cond_c;
 	wire `regc reg_c;
 	wire `regsel reg_sel;
-	wire `word databus, reg_out, reg_in, alu_out, alu_a, alu_b, Y_out;
+	wire `word databus, reg_out, reg_in, alu_out, alu_a, alu_b, Y_out, mar_d, mdr_d, mar_out, mdr_out, mem_out, pc_out, ir_out;
 	wire `halfword alu_cond, cond_out;
-	wire regfileRead, YtoBus, 
+	wire regRead, YtoBus, MDRtoBus, MARtoBus, PCtoBus, IRtoBus;
 	
 	//reg `word regfile `regsize;
-	reg `word mainMem `memsize;
+	//reg `word mainMem `memsize;
+	
+	always@ (reset) begin
+		pc <= 0;
+		halt <= 0;
+		start <= 1;
+	end
 	
 	//control
 	oracle();
 	
 	//regfile
 	regfile(clk, reg_out, reg_in, regc, regsel);
-	tri regfileBus(databus, regfileRead, regout);
+	tri regfileBus(databus, regRead, reg_out);
 	
 	//alu
 	alu(alu_out, alu_a, alu_b, alu_c, alu_cond);
 	
 	//aux registers
-	lss_reg A(clk, alu_a, databus, A_c)
-	lss_reg Y(clk, y_out, alu_out, y_c);
-	tri yBus(databus, YtoBus, y_out);
+	lss_reg A(clk, alu_a, databus, A_c);
+	lss_reg Y(clk, Y_out, alu_out, Y_c);
+	tri yBus(databus, YtoBus, Y_out);
 	lss_reg cond(clk, cond_out, alu_cond, cond_c);//condition register
-		
+	
+	lss_reg	mdr(clk, mdr_out, databus, mdr_c);//(clk, out, in, c)
+	tri mdrreg(databus, MDRtoBus, mdr_out);
+	
+	lss_reg	mar(clk, mar_out, mar_d, mar_c);//(clk, out, in, c)
+	tri marreg(mar_out, MARtoBus, mar_d);
+	
+	
+	mainMem(clk, memWrite, mdr_out, mem_out, mar_out);//(clk, write, datain, dataout, addr);
+	tri(databus, memRead, mem_out);
+	
+	lss_reg pc(clk, pc_out, databus, pc_c);
+	tri(databus, PCtoBus, pc_out);
+	
+	lss_reg ir(clk, ir_out, databus, ir_c);
+	tri(databus, IRtoBus, ir_out);
+	
+	
+endmodule
+
+module oracle(clk, start, reset, pc, ir, cond, constout);
+	input clk, start, reset;
+	input `word pc, ir;
+	input `halfword cond;
+	wire [1:0] A_c, Y_c, mdr_c, mar_c, cond_c;
+	wire [3:0] regc, regsel;
+	wire regRead, YtoBus, MDRtoBus, MARtoBus, PCtoBus, IRtoBus, memRead, memWrite;
+	output reg [25:0] controlOut;
+	reg [7:0] state, nextstate;
+	
+	localparam start0 	= 	8'd0   ,
+               start1 	= 	8'd1   ,
+               start2 	= 	8'd2   ,
+               start3 	= 	8'd3   ,
+			   ad0      =	8'd4   ,
+			   ad1      =	8'd5   ,
+			   ad2      =	8'd6   ,
+			   an0      =	8'd7   ,
+			   an1      =	8'd8   ,
+			   an2      =	8'd9   ,
+			   or0      =	8'd10  ,
+			   or1      =	8'd11  ,
+			   or2      =	8'd12  ,
+			   no0      =	8'd13  ,
+			   no1      =	8'd14  ,
+			   eo0      =	8'd15  ,
+			   eo1      =	8'd16  ,
+			   eo2      =	8'd17  ,
+			   mi0      =	8'd18  ,
+			   mi1      =	8'd19  ,
+			   mi2      =	8'd20  ,
+			   mi3      =	8'd21  ,
+			   sr0      =	8'd22  ,
+			   sr1      =	8'd23  ,
+			   sr2      =	8'd24  ,
+			   sr3      =	8'd25  ,
+			   br0      =	8'd26  ,
+			   br1      =	8'd27  ,
+			   br2      =	8'd28  ,
+			   br3      =	8'd29  ,
+			   br4      =	8'd30  ,
+			   br5      =	8'd31  ,
+			   br6      =	8'd32  ,
+			   br7      =	8'd33  ,
+			   br8      =	8'd34  ,
+			   br9      =	8'd35  ,
+			   br10     =	8'd36  ,
+			   br11     =	8'd37  ,
+			   jr0      =	8'd38  ,
+			   jr1      =	8'd39  ,
+			   li0      =	8'd40  ,
+			   si0      =	8'd41  ,
+			   si1      =	8'd42  ,
+			   si2      =	8'd43  ,
+			   si3      =	8'd44  ,
+			   co0      =	8'd45  ,
+			   co1      =	8'd46  ,
+			   lo0      =	8'd47  ,
+			   lo1      =	8'd48  ,
+			   lo2      =	8'd49  ,
+			   st0      =	8'd50  ,
+			   st1      =	8'd51  ,
+			   st2      =	8'd52;
+			   
+			   
+			   always@ (posedge clk);
+				if(reset) state <= start0;
+				else 		state <= nextstate;
+				end
+				
+				always@ (posedge clk)
+					case(state)
+						start0: 	
+						start1: 	
+						start2: 	
+						start3: 	
+						ad0   :  
+						ad1   :  
+						ad2   :  
+						an0   :  
+						an1   :  
+						an2   :  
+						or0   :  
+						or1   :  
+						or2   :  
+						no0   :  
+						no1   :  
+						eo0   :  
+						eo1   :  
+						eo2   :  
+						mi0   :  
+						mi1   :  
+						mi2   :  
+						mi3   :  
+						sr0   :  
+						sr1   :  
+						sr2   :  
+						sr3   :  
+						br0   :  
+						br1   :  
+						br2   :  
+						br3   :  
+						br4   :  
+						br5   :  
+						br6   :  
+						br7   :  
+						br8   :  
+						br9   :  
+						br10  :  
+						br11  :  
+						jr0   :  
+						jr1   :  
+						li0   :  
+						si0   :  
+						si1   :  
+						si2   :  
+						si3   :  
+						co0   :  
+						co1   :  
+						lo0   :  
+						lo1   :  
+						lo2   :  
+						st0   :  
+						st1   :  
+						st2   :  
+						
+						
+						
+						
+						
+						
+						
+						
+						
+					endcase
+				end
+	assign controlOut = {};
 endmodule
 
 //--------------------regfile------------------------
-module regfile(clk, out, in, regc, regsel);
+module regfile(clk, out, in, c, sel);
 	input clk;
 	input `word in; //write data if reg control is set to write
-	input [3:0] regc, regsel; 
+	input [3:0] c, sel; 
 	output `word out; 
-	reg `word register `regsize;
+	reg `word r `regsize;
 	
 	always@ (posedge clk)begin
 		case(regc)
-		0: register[regsel] <= register[regsel];
-		1: register[regsel] <= in;
-		2: register[regsel] <= register[regsel] << 1;
-		3:register[regsel] <= register[regsel] >> 1;
+		0: r[sel] <= r[sel];
+		1: r[sel] <= in;
+		2: r[sel] <= r[sel] << 1;
+		3: r[sel] <= r[sel] >> 1;
 	endcase
 	end
-	assign out = register[regsel];
+	assign out = r[sel];
 	
 endmodule
 
 //----------------------ALU---------------------------
-module alu(out, a, b, c, cond)
+module alu(out, a, b, c, cond);
 	input `word a, b;
-	input [2:0] cl;
-	output `word out;
-	output [7:0] cond;
+	input [2:0] c;
+	output reg `word out;
+	output reg [7:0] cond;
 	
 	always@ (c) begin
 		case(c)
 			0: out = a + b;
 			1: out = a & b;
 			2: out = a | b;
-			3: out = a ^ b;
-			4: out = ~a;
+			3: out = ~b;
+			4: out = a ^ b;
 		endcase
 	end
 	
@@ -133,28 +294,26 @@ module alu(out, a, b, c, cond)
 endmodule
 
 //-----------------------------------------------------control logic---------------------------
-module oracle();
+
+
+//-----------------------------------------------------main mem--------------------------------
+module mainMem(clk, write, datain, dataout, addr);
+	input clk, write;
+	input `word datain, addr;
+	output `word dataout;
+	
+	reg `word memory `memsize;
+	
+	always@ (posedge clk) begin
+		if (write) memory[addr] <= datain;
+		dataout <= memory[addr];
+	end
 	
 endmodule
 
-////-----------------------------------------------------main mem--------------------------------
-//module mainMem(clk, write, datain, dataout, addr);
-//	input clk, write;
-//	input `word datain, addr;
-//	output `word dataout;
-//	
-//	reg `word memory `memsize;
-//	
-//	always@ (posedge clk) begin
-//		if (write) memory[addr] <= datain;
-//		dataout <= memory[addr];
-//	end
-//	
-//endmodule
-//
-//-----------------------------------------------------lss_reg---------------------------------
+-----------------------------------------------------lss_reg---------------------------------
 
-module register(clk, out, in, c)
+module lss_reg(clk, out, in, c)
 	input [1:0] c;
 	input `word in;
 	output `word out;
@@ -167,4 +326,70 @@ module register(clk, out, in, c)
 		3: out <= out >> 1;
 		endcase
 	end
+endmodule
+
+module lss_reg_tb;
+  reg [15:0] in;
+  wire [15:0] out;
+  reg reset, clk;
+  reg [1:0] c;
+  
+  lss_reg uut(clk, out, in, c, reset);
+  
+  always begin
+    clk <= ~clk;
+    #5;
+  end
+  
+  initial begin
+    clk <= 0;
+    reset <= 1;
+    c <= 0;
+    #50;
+    reset <= 0;
+    #50;
+    $display("r = %b", out);
+    #50;
+    
+    in <= 16'h5555;
+    c <= 1;
+    #50;
+    in <= 0;
+    c <= 0;
+    $display("r = %b", out);
+    #50;
+    
+    c <= 2;
+    #50;
+    c <= 0;
+    $display("r = %b", out);
+    
+    c <= 3;
+    #50;
+    c <= 0;
+    $display("r = %b", out);
+      
+  end
+  
+endmodule
+
+module alu_tb;
+  reg [15:0] a, b;
+  wire [15:0] out;
+  reg [2:0] c;
+  wire [7:0] cond;
+  
+  integer i;
+  
+  alu uut(out, a, b, c, cond);
+  
+  initial begin
+  	a <= 8; b <= 128;
+    for(i = 0; i != 5; i = i + 1) begin
+      c<=i; #10;
+      $display("case %d : out = %b  cond = %b", i, out, cond);
+    end
+      
+  end
+  
 endmodule
