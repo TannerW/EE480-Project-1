@@ -1,0 +1,56 @@
+%\documentclass{sig-alternate-05-2015}
+\documentclass[sigconf]{acmart}
+
+% ACM templates include ISBN and DOI...
+\acmISBN{N.A.}
+\acmDOI{N.A.}
+\acmConference{N/A} 
+\acmYear{2017}
+
+\begin{document}
+
+\title{EE480 Assignment 1: Logick Encoding And Assembler}
+\subtitle{Implementor's Notes}
+
+\author{
+Owen Tanner Wilkerson\\
+       \email{\texttt{tanner.wilkerson@uky.edu}}
+}
+
+\maketitle
+
+\section{abstract}
+This project uses the Assembler Interpreter from Kentucky (or AIK) to encode a custom assembly language, called Logick, provided by Dr. Dietz. The encoding must be into 16-bit words per specification. This 16-bit word encoding scheme is given by the instructor because Logick is designed to run on machines that use the following structure: sixteen 16-bit registers, 16-bit datapaths, and 16-bit addresses.
+
+
+\section{General Approach}
+
+\tab For this assignment, the encoding solution used takes a very naive and basic approach. First, all of the basic instructions with 3 register arguments were addressed. This includes ad, al, an, dl, eo, ml, or, and sr. For these, the opCode was placed in the first 4 bits and started with 0x0 and went to 0x7. All of these mentioned commands have the follow argument pattern: \$d,\$s,\$t. These arguments were encoded with 4-bits each in the remaining 12-bits in the respective order they were just listed. This structure give the basic format example of "al	\$.d, \$.s, \$.t	:=	0x1:4	.d:4	.s:4	.t:4".
+
+Next, the instructions that require an 8-bit immediate value as an argument were addressed. There are only two instructions that use immediate values; those are li and si. The opCodes for these commands were encoded as 0x8 and 0x9 respectively. Following the opCode, the destination register is encoded to the next 4-bit; then, the remaining 8-bits are allocated for encoding the 8-bit immediate value.
+
+Then, the instruction requiring two registers, named by the schematic as, \$d and \$s as arguments were encoded. For these instructions, we preserve some of the opCode field's capabilities, as it is limited to only 4-bits and we have 20 instructions to encode. So, to lessen the load on the opCode field, the instructions lo, mi, nl, no, and st all have 0xa in their opCode field. This is because these instructions have an extra 4-bits to use as their two register arguments only consume 8-bits. So, the last 4-bits of these instructions' encoding are used to differentiate between instructions that fall under the 0xa opCode. These last 4-bit simply go from 0x0 to 0x4. This leaves the middle 8-bits for encoding the arguments. This structure results in the following basic example of "mi	\$.d, \$.s	:=	0xa:4	.d:4	.s:4	0x1:4".
+
+The two instructions, cl and co, that require the registers, named by the schematic as, \$s and \$t as arguments follow similar logic to the instructions discussed directly above. Cl and co differ from the above logic by having the opCode field equal to 0xb and by moving the identifier seen above in the last 4-bits to the second 4-bits. Allowing for the last 8-bit to be used to encode \$s and \$t. This structure results in the basic example of "co	\$.s, \$.t	:=	0xb:4	1:4	.s:4	.t:4".
+
+Two unique instructions are addressed next - br and jr. For br [arguments being c and lab], the opCode is set uniquely as 0xc. Following the opCode, a conditional register is encoded; per the specification, the conditional registers can be f, lt, le, eq, ne, ge, gt, t. Next, the label must be encoded as an 8-bit address using lab-(PC+1), or (lab-(.+1)) in AIK syntax, in order to properly set the correct address location for the PC to go to. As for jr [arguments c and \$d], the encoding is quite simple. Jr has an opCode of 0xd, the next 8-bits encode c and \$d using 4-bits each, and the remaining 4-bits are set to an all zero pad.
+
+Finally, the system call instruction, sy, is encoded as all 1's in its 16-bit word.
+
+Now, a load 16-bit immediate address to register macro, la [arguments \$r and immed], was a required definition by the specification. This macro uses AIK's conditional syntax to first check if the top 9 bits of the 16-bit immediate are all 1's or all 0's; if either of these conditions are true, then this indicates a standard sign-extend of an 8-bit immediate; this condition is already handled by li. Therefore, a simple li on the bottom 8-bits of the given 16-bit immediate can be done. Yet, if the top 9 bits of the 16-bit immediate are NOT all 1's and NOT all 0's, then an li of the top 8-bits to \$r followed by a si of the bottom 8-bits to \$r must be performed. This logic results in the following AIK code:
+
+la \$.r, .immed ?(((.immed&0xff80)==0xff80)||((.immed&0xff80)==0)) := { 
+   0x8:4 .r:4 .immed:8 }
+
+la \$.r, .immed := { 
+   0x8:4 .r:4 (.immed>>8):8 
+   0x9:4 .r:4 .immed:8 }
+
+% insert a break to roughly level columns...
+\vfill\pagebreak
+
+\section{Issues}
+
+There were hardly any issues during the pursuit of this assignment. The only issue was that I orignally forgot the define the conditional registers, but after the definition of the registers as AIK .const's, the encoding continued with proper execution.
+
+\end{document}
