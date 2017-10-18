@@ -186,24 +186,24 @@ module oracle(clk, start, reset, pc, ir, cond, constout);
 						start1: 	
 						start2: 	
 						start3: 	
-						ad0   :  begin regsel <= s; regRead <= 1; regc <= 0; A_c <= 1; state <= ; end
-						ad1   :  begin regsel <= t; regRead <= 1; cond_c <= 0; Y_c <= 1; state <= ; end
-						ad2   :  begin YtoBus <= 1; regsel <= d; regc <= 1; state <= ; end
-						an0   :  begin regsel <= s; regRead <= 1; regc <= 0; A_c <= 1; state <= ; end
-						an1   :  begin regsel <= t; regRead <= 1; cond_c <= 1; Y_c <= 1; state <= ; end
-						an2   :  begin YtoBus <= 1; regsel <= d; regc <= 1; state <= ; end
-						or0   :  begin regsel <= s; regRead <= 1; regc <= 0; A_c <= 1; state <= ; end
-						or1   :  begin regsel <= t; regRead <= 1; cond_c <= 2; Y_c <= 1; state <= ; end
-						or2   :  begin YtoBus <= 1; regsel <= d; regc <= 1; state <= ; end
-						no0   :  begin regsel <= s; regRead <= 1; cond_c <= 3; Y_c <= 1; state <= ; end
-						no1   :  begin YtoBus <= 1; regsel <= d; regc <= 1; state <= ; end
-						eo0   :  begin regsel <= s; regRead <= 1; regc <= 0; A_c <= 1; state <= ; end
-						eo1   :  begin regsel <= t; regRead <= 1; cond_c <= 4; Y_c <= 1; state <= ; end
-						eo2   :  begin YtoBus <= 1; regsel <= d; regc <= 1; state <= ; end
+						ad0   :  begin regsel <= ir[src]; regRead <= 1; regc <= 0; A_c <= 1; state <= ; end
+						ad1   :  begin regsel <= ir[Tsrc]; regRead <= 1; cond_c <= 0; Y_c <= 1; state <= ; end
+						ad2   :  begin YtoBus <= 1; regsel <= ir[dest]; regc <= 1; state <= ; end
+						an0   :  begin regsel <= ir[src]; regRead <= 1; regc <= 0; A_c <= 1; state <= ; end
+						an1   :  begin regsel <= ir[Tsrc]; regRead <= 1; cond_c <= 1; Y_c <= 1; state <= ; end
+						an2   :  begin YtoBus <= 1; regsel <= ir[dest]; regc <= 1; state <= ; end
+						or0   :  begin regsel <= ir[src]; regRead <= 1; regc <= 0; A_c <= 1; state <= ; end
+						or1   :  begin regsel <= ir[Tsrc]; regRead <= 1; cond_c <= 2; Y_c <= 1; state <= ; end
+						or2   :  begin YtoBus <= 1; regsel <= ir[dest]; regc <= 1; state <= ; end
+						no0   :  begin regsel <= ir[src]; regRead <= 1; cond_c <= 3; Y_c <= 1; state <= ; end
+						no1   :  begin YtoBus <= 1; regsel <= ir[dest]; regc <= 1; state <= ; end
+						eo0   :  begin regsel <= ir[src]; regRead <= 1; regc <= 0; A_c <= 1; state <= ; end
+						eo1   :  begin regsel <= ir[Tsrc]; regRead <= 1; cond_c <= 4; Y_c <= 1; state <= ; end
+						eo2   :  begin YtoBus <= 1; regsel <= ir[dest]; regc <= 1; state <= ; end
 						mi0   :  const(1); A_c <= 1; state <= ; end
-						mi1   :  begin regsel <= s; regRead <= 1; cond_c <= 3; Y_c <= 1; state <= ; end
+						mi1   :  begin regsel <= ir[src]; regRead <= 1; cond_c <= 3; Y_c <= 1; state <= ; end
 						mi2   :  begin YtoBus <= 1; cond_c <= 0; Y_c <= 1; state <= ; end
-						mi3   :  begin YtoBus <= 1; regsel <= d; regc <= 1; state <= ; end
+						mi3   :  begin YtoBus <= 1; regsel <= ir[dest]; regc <= 1; state <= ; end
 						sr0   :  
 						sr1   :  
 						sr2   :  
@@ -229,10 +229,10 @@ module oracle(clk, start, reset, pc, ir, cond, constout);
 						si3   :  
 						co0   :  
 						co1   :  
-						lo0   :  begin regsel <= s; regRead <= 1; mar_c <= 1; state <= ; end
+						lo0   :  begin regsel <= ir[src]; regRead <= 1; mar_c <= 1; state <= ; end
 						lo1   :  begin memRead <= 1; mdr_c <= 1; mar_c <= 0; state <= ; end
-						lo2   :  begin memRead <= 0; mdr_c <= 0; regsel <= d; regc <= 1; MDRtoBus <= 1; state <= ; end
-						st0   :  begin regsel <= d; regRead <= 1; mdr_c <= 1; state <= ; end
+						lo2   :  begin memRead <= 0; mdr_c <= 0; regsel <= ir[dest]; regc <= 1; MDRtoBus <= 1; state <= ; end
+						st0   :  begin regsel <= ir[dest]; regRead <= 1; mdr_c <= 1; state <= ; end
 						st1   :  begin memWrite <= 1; mar_c <= 1; mdr_c <= 0; state <= ; end
 						st2   :  begin memWrite <= 0; mar_c <= 0; state <= ; end
 						
