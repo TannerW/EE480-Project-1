@@ -126,19 +126,22 @@ The goal of this assignment was to utilize the assembly code written in a previo
 	\end{Verbatim}
 	
 	The Oracle, in this implementation, is a large FSM whose outputs are used to control the rest of the processor. To implement such a large statemachine, a local parameter was used to enumerate each of the individual states. The fisrt state of each instruction will enumerated as its opcode, and states that follow will be enumerated in acending order starting at 50. 50 was chosen to allow for more instructions to be added since the log number system is yet to be implemented. This enumeration scheme allows for a minimal amount of case statements in the verilog code, i.e. any state that simply goes to the next numbered state can be combined into one case in the block. 
+	
 	The oracle is made from 3 always blocks. The first simply drives the module from the clock and implements a reset signal. The next always block defines the next state logic for every state used in this implementation. The final block drives the control signals that go directly to the other modules in this project. Most of the complexity in this project came from designing and implementing this module. Because of this, it was expected to be the most difficult to test.
 	
-	The top module in this 
-		
+	The top module in this
 	
 \section{Testing and Issues}
 \subsection{Testing}
-	Our testing is split up into a few different methods in order to ensure as complete of a testing routine as we can get. In this section, we'll step through all of these methods briefly and explain the general practice for testing using these methods. \\
+	Our testing is split up into a few different methods in order to ensure as complete of a testing routine as we can get. In this section, we'll step through all of these methods briefly and explain the general practice for testing using these methods. 
 	
-	The first method used is contained in the $Testing.txt$ file. This file contains multiple small blocks that aim to test the logic correctness of the operations defined in our assembly code. Each one has its own derived process for testing, however many of the operations have similar structure. for example, many of the operations tested from the ALU will place test operands into the operation to be tested, get a result from the operation, and use compare to 
+	The first method used is contained in the $Testing.txt$ file. This file contains multiple small blocks that aim to test the logic correctness of the operations defined in our assembly code. Each one has its own derived process for testing, however many of the operations have similar structure. For example, many of the operations tested from the ALU will place test operands into the operation to be tested, get a result from the operation, and use compare to see if the result matches a predetermined correct answer that will be stored in memory.
+	
+	In the second method, we utilized Vivado to ensure that the structure of the processor was correct. We were able to synthesize the design properly and view the structure that Vivado generated. In doing so, we got the correct structure for most if not all of our processor. This portion of testing did not necessarily allow for us to ensure that the logic of the processor is correct, but we were at least able to see that all of the individual modules described above were connected properly and that, assuming these modules were internally correct, the processor should work. Unfortunately, as seen in the $Known Issues$ section below, the modules were not internaly correct on all counts.
+	
+	The last method for testing was to synthesize the circuit as described above and use a dumpfile to observe the changing of signals within our design. This was performed in Vivado, which allowed us to select which specific signals we wanted to observe. We focused on the signals involved with the processor module so we could observe the steps taken inside the state machine for logic. This is where we uncovered some of the issues that are currently causing our processor not to function. 
 
 \subsection{Known Issues}
-	Our biggest known issue at the moment is that for one reason or another, our processor does not work. We currently have a very large portion of the code done, but there is no promise that it functions currently. As it stands at the moment of writing this, our issue lies in the state machine of our processor. Either some of our operations are defined incorrectly, or something larger is wrong with the design. 
-
+	Our biggest known issue at the moment is that our processor does not work. We currently have a very large portion of the code done, but there is no promise that it functions currently. It is almost certain that the problem that is causing our code not to work properly comes from the complexity of the state machine. While we feel confident that the logic of our individual operation states is very close to correct, we have issues in the proper toggling of certain signals within the state machine that make it impossible for the state machine to advance through the necessary steps for an operation properly. Namely, the halt signal sent to the state machine is persistently turned on. 
 
 \end{document}
