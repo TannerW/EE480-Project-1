@@ -531,7 +531,7 @@ module testbench;
 		reset = 1;
 		#10;
 		reset = 0;
-		$dumpfile("results.txt");
+		$dumpfile();
 		$dumpvars(0, processor);
 	end
 endmodule
