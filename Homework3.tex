@@ -125,7 +125,11 @@ The goal of this assignment was to utilize the assembly code written in a previo
 	endmodule
 	\end{Verbatim}
 	
+	The Oracle, in this implementation, is a large FSM whose outputs are used to control the rest of the processor. To implement such a large statemachine, a local parameter was used to enumerate each of the individual states. The fisrt state of each instruction will enumerated as its opcode, and states that follow will be enumerated in acending order starting at 50. 50 was chosen to allow for more instructions to be added since the log number system is yet to be implemented. This enumeration scheme allows for a minimal amount of case statements in the verilog code, i.e. any state that simply goes to the next numbered state can be combined into one case in the block. 
+	The oracle is made from 3 always blocks. The first simply drives the module from the clock and implements a reset signal. The next always block defines the next state logic for every state used in this implementation. The final block drives the control signals that go directly to the other modules in this project. Most of the complexity in this project came from designing and implementing this module. Because of this, it was expected to be the most difficult to test.
 	
+	The top module in this 
+		
 	
 \section{Testing and Issues}
 \subsection{Testing}
